@@ -16,8 +16,7 @@ namespace Paul_Andreea_Lab2.Controllers
     public class CustomersController : Controller
     {
         private readonly LibraryContext _context;
-        private string _baseUrl = "http://localhost:26239/api/Customers";
-
+        private string _baseUrl = "http://localhost:38428/api/Customers";
         public CustomersController(LibraryContext context)
         {
             _context = context;
@@ -28,18 +27,15 @@ namespace Paul_Andreea_Lab2.Controllers
         {
             var client = new HttpClient();
             var response = await client.GetAsync(_baseUrl);
-
             if (response.IsSuccessStatusCode)
             {
-                var customers = JsonConvert.DeserializeObject<List<Customer>>(await
-               response.Content.ReadAsStringAsync());
+                var customers = JsonConvert.DeserializeObject<List<Customer>>(await response.Content.
+                ReadAsStringAsync());
                 return View(customers);
             }
             return NotFound();
-
         }
-
-        // GET: Customers/Details/5
+        // GET: Inventory/Details/5
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
@@ -56,20 +52,14 @@ namespace Paul_Andreea_Lab2.Controllers
             }
             return NotFound();
         }
-
         // GET: Customers/Create
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: Customers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("CustomerID,Name,Adress,BirthDate")]
-Customer customer)
+        public async Task<ActionResult> Create([Bind("CustomerID,Name,Adress,BirthDate")] Customer customer)
         {
             if (!ModelState.IsValid) return View(customer);
             try
@@ -85,12 +75,10 @@ Customer customer)
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, $"Unable to create record:{ ex.Message}");
+                ModelState.AddModelError(string.Empty, $"Unable to create record: {ex.Message}");
             }
             return View(customer);
         }
-
-        // GET: Customers/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
@@ -107,14 +95,9 @@ Customer customer)
             }
             return new NotFoundResult();
         }
-
-        // POST: Customers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind("CustomerID,Name,Adress,BirthDate")]
-Customer customer)
+        public async Task<ActionResult> Edit([Bind("CustomerID,Name,Adress,BirthDate")] Customer customer)
         {
             if (!ModelState.IsValid) return View(customer);
             var client = new HttpClient();
@@ -127,8 +110,6 @@ Customer customer)
             }
             return View(customer);
         }
-
-        // GET: Customers/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
@@ -139,35 +120,30 @@ Customer customer)
             var response = await client.GetAsync($"{_baseUrl}/{id.Value}");
             if (response.IsSuccessStatusCode)
             {
-                var customer = JsonConvert.DeserializeObject<Customer>(await
-               response.Content.ReadAsStringAsync());
+                var customer = JsonConvert.DeserializeObject<Customer>(await response.Content.ReadAsStringAsync());
                 return View(customer);
             }
             return new NotFoundResult();
         }
-
         // POST: Customers/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-
         public async Task<ActionResult> Delete([Bind("CustomerID")] Customer customer)
         {
             try
             {
                 var client = new HttpClient();
                 HttpRequestMessage request =
-                new HttpRequestMessage(HttpMethod.Delete,
-               $"{_baseUrl}/{customer.CustomerID}")
+                new HttpRequestMessage(HttpMethod.Delete, $"{_baseUrl}/{customer.CustomerID}")
                 {
-                    Content = new StringContent(JsonConvert.SerializeObject(customer),
-               Encoding.UTF8, "application/json")
+                    Content = new StringContent(JsonConvert.SerializeObject(customer), Encoding.UTF8, "application/json")
                 };
                 var response = await client.SendAsync(request);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, $"Unable to delete record:{ ex.Message}");
+                ModelState.AddModelError(string.Empty, $"Unable to delete record: {ex.Message}");
             }
             return View(customer);
         }

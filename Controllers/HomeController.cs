@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Paul_Andreea_Lab2.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Paul_Andreea_Lab2.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,25 +8,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Paul_Andreea_Lab2.Data;
-using Paul_Andreea_Lab2.Models;
 using Paul_Andreea_Lab2.Models.LibraryViewModels;
+
 
 namespace Paul_Andreea_Lab2.Controllers
 {
     public class HomeController : Controller
     {
         private readonly LibraryContext _context;
+
         public HomeController(LibraryContext context)
         {
             _context = context;
         }
-
-        private readonly ILogger<HomeController> _logger;
-
-        //public HomeController(ILogger<HomeController> logger)
-        //{
-          //  _logger = logger;
-        //}
 
         public IActionResult Index()
         {
@@ -37,7 +31,6 @@ namespace Paul_Andreea_Lab2.Controllers
         {
             return View();
         }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -47,14 +40,20 @@ namespace Paul_Andreea_Lab2.Controllers
         public async Task<ActionResult> Statistics()
         {
             IQueryable<OrderGroup> data =
-            from order in _context.Orders
-            group order by order.OrderDate into dateGroup
-            select new OrderGroup()
-            {
-                OrderDate = dateGroup.Key,
-                BookCount = dateGroup.Count()
-            };
+                                          from order in _context.Orders
+                                          group order by order.OrderDate into dateGroup
+                                          select new OrderGroup()
+                                          {
+                                              OrderDate = dateGroup.Key,
+                                              BookCount = dateGroup.Count()
+                                          };
             return View(await data.AsNoTracking().ToListAsync());
         }
+
+        public IActionResult Chat()
+        {
+            return View();
+        }
+
     }
 }

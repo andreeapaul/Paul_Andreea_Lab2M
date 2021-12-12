@@ -20,15 +20,16 @@ namespace Paul_Andreea_Lab2.Controllers
         }
 
         // GET: Books
-         public async Task<IActionResult> Index(
-             string sortOrder,
-             string currentFilter,
-             string searchString,
-             int? pageNumber)
+        //lab3
+        public async Task<IActionResult> Index(
+            string sortOrder, 
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
-                ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
-                ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
 
             if (searchString != null)
             {
@@ -40,32 +41,32 @@ namespace Paul_Andreea_Lab2.Controllers
             }
 
             ViewData["CurrentFilter"] = searchString;
-
             var books = from b in _context.Books
-                            select b;
+                        select b;
+
             if (!String.IsNullOrEmpty(searchString))
             {
                 books = books.Where(s => s.Title.Contains(searchString));
             }
+
             switch (sortOrder)
-                {
-                    case "title_desc":
-                        books = books.OrderByDescending(b => b.Title);
-                        break;
-                    case "Price":
-                        books = books.OrderBy(b => b.Price);
-                        break;
-                    case "price_desc":
-                        books = books.OrderByDescending(b => b.Price);
-                        break;
-                    default:
-                        books = books.OrderBy(b => b.Title);
-                        break;
-                }
+            {
+                case "title_desc":
+                    books = books.OrderByDescending(b => b.Title);
+                    break;
+                case "Price":
+                    books = books.OrderBy(b => b.Price);
+                    break;
+                case "price_desc":
+                    books = books.OrderByDescending(b => b.Price);
+                    break;
+                default:
+                    books = books.OrderBy(b => b.Title);
+                    break;
+            }
             int pageSize = 2;
             return View(await PaginatedList<Book>.CreateAsync(books.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
-        
 
         // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -76,10 +77,11 @@ namespace Paul_Andreea_Lab2.Controllers
             }
 
             var book = await _context.Books
-               .Include(s => s.Orders)
-               .ThenInclude(e => e.Customer)
-               .AsNoTracking()
-               .FirstOrDefaultAsync(m => m.ID == id);
+                .Include(s => s.Orders)
+                .ThenInclude(e => e.Customer)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);//lab3
+
             if (book == null)
             {
                 return NotFound();
@@ -95,12 +97,13 @@ namespace Paul_Andreea_Lab2.Controllers
         }
 
         // POST: Books/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Author,Price")] Book book)
         {
+           //lab3
             try
             {
 
@@ -113,9 +116,7 @@ namespace Paul_Andreea_Lab2.Controllers
             }
             catch (DbUpdateException /* ex*/)
             {
-
-                ModelState.AddModelError("", "Unable to save changes. " +
-                "Try again, and if the problem persists ");
+                ModelState.AddModelError("", "Unable to save changes. " +  "Try again, and if the problem persists ");
             }
             return View(book);
         }
@@ -137,8 +138,9 @@ namespace Paul_Andreea_Lab2.Controllers
         }
 
         // POST: Books/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //lab3
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(int? id)
@@ -147,11 +149,10 @@ namespace Paul_Andreea_Lab2.Controllers
             {
                 return NotFound();
             }
+
             var studentToUpdate = await _context.Books.FirstOrDefaultAsync(s => s.ID == id);
-            if (await TryUpdateModelAsync<Book>(
-            studentToUpdate,
-            "",
-            s => s.Author, s => s.Title, s => s.Price))
+
+            if (await TryUpdateModelAsync<Book>(studentToUpdate,"",s => s.Author, s => s.Title, s => s.Price))
             {
                 try
                 {
@@ -163,11 +164,13 @@ namespace Paul_Andreea_Lab2.Controllers
                     ModelState.AddModelError("", "Unable to save changes. " +
                     "Try again, and if the problem persists");
                 }
+                return RedirectToAction(nameof(Index));
             }
             return View(studentToUpdate);
         }
 
         // GET: Books/Delete/5
+        //lab3
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
@@ -176,22 +179,23 @@ namespace Paul_Andreea_Lab2.Controllers
             }
 
             var book = await _context.Books
-                 .AsNoTracking()
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (book == null)
             {
                 return NotFound();
             }
+
             if (saveChangesError.GetValueOrDefault())
             {
-                ViewData["ErrorMessage"] =
-                "Delete failed. Try again";
+                ViewData["ErrorMessage"] = "Delete failed. Try again";
             }
 
             return View(book);
         }
 
         // POST: Books/Delete/5
+        //lab3
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -206,7 +210,6 @@ namespace Paul_Andreea_Lab2.Controllers
                 _context.Books.Remove(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-
             }
             catch (DbUpdateException /* ex */)
             {
@@ -214,11 +217,10 @@ namespace Paul_Andreea_Lab2.Controllers
             }
 
         }
+
         private bool BookExists(int id)
-            {
-                return _context.Books.Any(e => e.ID == id);
-            }
+        {
+            return _context.Books.Any(e => e.ID == id);
         }
     }
-
-
+}

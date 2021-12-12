@@ -30,7 +30,6 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Adress)
                 </td>
-
                 <td>
                     @{
                         foreach (var book in item.PublishedBooks)
@@ -82,31 +81,37 @@
                 </td>
             </tr>
         }
-        </table>
-        }
+    </table>
+}
 
-        @if (Model.Orders != null)
+@if (Model.Orders != null)
+{
+    <h3>
+        Customers that have ordered the Selected Book
+    </h3>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Order Date</th>
+        </tr>
+        @foreach (var item in Model.Orders)
         {
-            <h3>
-                Customers that have ordered the Selected Book
-            </h3>
-            <table class="table">
-                <tr>
-                    <th>Name</th>
-                    <th>Order Date</th>
-                </tr>
-                @foreach (var item in Model.Orders)
-                {
-                    <tr>
-                        <td>
-                            @item.Customer.Name
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.OrderDate)
-                        </td>
-                    </tr>
-                }
-            </table>
+            <tr>
+                <td>
+                    @item.Customer.Name
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderDate)
+                </td>
+            </tr>
         }
+    </table>
+}
 
-
+@*
+@model IEnumerable @{ ViewData["Title"] = "Index"; }
+Index
+Create New
+foreach (var item in Model) { } 
+Html.DisplayNameFor(model => model.Title)	@Html.DisplayNameFor(model => model.Author)	@Html.DisplayNameFor(model => model.Price)
+Html.DisplayFor(modelItem => item.Title)	@Html.DisplayFor(modelItem => item.Author)	@Html.DisplayFor(modelItem => item.Price)	Edit | Details | Delete*@

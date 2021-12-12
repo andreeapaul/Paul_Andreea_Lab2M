@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Paul_Andreea_Lab2.Data;
 using Paul_Andreea_Lab2.Models;
+using System.Net.Http;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace LibraryWebAPI.Controllers
 {

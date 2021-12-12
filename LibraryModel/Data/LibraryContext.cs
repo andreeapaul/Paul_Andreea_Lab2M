@@ -1,13 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Paul_Andreea_Lab2.Models;
 
-
 namespace Paul_Andreea_Lab2.Data
 {
     public class LibraryContext : DbContext
     {
-        public LibraryContext(DbContextOptions<LibraryContext> options) :
-       base(options)
+        public LibraryContext(DbContextOptions<LibraryContext> options) : base(options)
         {
         }
         public DbSet<Customer> Customers { get; set; }
@@ -15,7 +13,6 @@ namespace Paul_Andreea_Lab2.Data
         public DbSet<Book> Books { get; set; }
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<PublishedBook> PublishedBooks { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Customer>().ToTable("Customer");
@@ -23,8 +20,7 @@ namespace Paul_Andreea_Lab2.Data
             modelBuilder.Entity<Book>().ToTable("Book");
             modelBuilder.Entity<Publisher>().ToTable("Publisher");
             modelBuilder.Entity<PublishedBook>().ToTable("PublishedBook");
-            modelBuilder.Entity<PublishedBook>()
-            .HasKey(c => new { c.BookID, c.PublisherID });//configureaza cheia primara compusa
+            modelBuilder.Entity<PublishedBook>().HasKey(c => new { c.BookID, c.PublisherID });//configureaza cheia primara compusa
         }
     }
 }
